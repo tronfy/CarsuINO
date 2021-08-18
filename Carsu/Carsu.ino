@@ -1,14 +1,20 @@
 #include "BluetoothSerial.h"
-#include "Carsu.h"
+#include "Sensor.h"
 
 BluetoothSerial SerialBT;
+
+// identifier, resistance, port
+Sensor MQ7("CO", 2000, 4);
 
 void setup()
 {
   Serial.begin(9600);
   Serial.println("DEVICE START");
+  
   SerialBT.begin("Carsu");
   Serial.println("BLUETOOTH OK");
+  
+  MQ7.calibrate();
 }
 
 void sendBT(String d)
@@ -33,13 +39,8 @@ void recvBT()
 
 void loop()
 {
-  float ppmCO = 1.23;
-  float ppmCO2 = 12.34;
-
-  sendBT(Carsu::package("CO", ppmCO));
-  sendBT(Carsu::package("CO2", ppmCO2));
-
+  sendBT(MQ7.package());
+  
   recvBT();
-
   delay(500);
 }

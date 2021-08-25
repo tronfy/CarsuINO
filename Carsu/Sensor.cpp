@@ -25,13 +25,8 @@ void Sensor::calibrate() {
   Serial.println("done");
 }
 
-String Sensor::package() {
+void Sensor::package(char* outPkg) {
   getReadings();
   float ppm = pow(1538.46 * (5.0 - volts) / volts / R0, -1.709);
-  
-  String str = gas;
-  str.concat("|");
-  str.concat(ppm);
-  String pkg = "<" + String(str) + ">";
-  return pkg;
+  sprintf(outPkg, "<%s|%.3f>", gas, ppm);
 }

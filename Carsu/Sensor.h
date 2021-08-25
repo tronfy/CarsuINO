@@ -6,7 +6,7 @@
 class Sensor
 {
   private:
-    String gas;
+    char* gas;
     float resistance;
     int port;
     float volts, R0, pR0;
@@ -14,12 +14,18 @@ class Sensor
     void getReadings();
     void calibrateStep();
   public:
-    Sensor(String gas, float resistance, int port) {
-      this -> gas = gas;
+    Sensor(char* gas, float resistance, int port) {
+      this -> gas = new char[10];
+      int i = 0;
+      while(gas[i] != '\0' && i < 10) {
+        this -> gas[i] = gas[i];
+        i++;
+      }
+      this -> gas[i] = '\0';
       this -> resistance = resistance;
       this -> port = port;
     }
     void calibrate();
-    String package();
+    void package(char* outPkg);
 };
 #endif

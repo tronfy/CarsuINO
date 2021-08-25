@@ -6,6 +6,8 @@ BluetoothSerial SerialBT;
 // identifier, resistance, port
 Sensor MQ7("CO", 2000, 4);
 
+char coPkg[18];
+
 void setup()
 {
   Serial.begin(9600);
@@ -17,7 +19,7 @@ void setup()
   MQ7.calibrate();
 }
 
-void sendBT(String d)
+void sendBT(char* d)
 {
   Serial.print("<< BT ");
   Serial.println(d);
@@ -39,7 +41,8 @@ void recvBT()
 
 void loop()
 {
-  sendBT(MQ7.package());
+  MQ7.package(coPkg);
+  sendBT(coPkg);
   
   recvBT();
   delay(500);

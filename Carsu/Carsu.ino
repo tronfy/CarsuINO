@@ -1,13 +1,21 @@
-#include "BluetoothSerial.h"
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+
 #include "MICS6814Sensor.h"
 #include "RSensor.h"
 #include "QSensor.h"
 
-#define MAX_VOLTS 3.3
-#define MAX_ANALOG 4095.0
+#define MAX_VOLTS       3.3
+#define MAX_ANALOG      4095.0
 #define PREHEAT_STANDBY 10000
 
-BluetoothSerial SerialBT;
+#define CARSU_UUID "7f69779e-1f87-4808-9988-b13f959ee8ad"
+#define READINGS_UUID "755a2383-32be-4ae2-b19b-b68ad97d9d5a"
+
+BLEServer *pServer;
+BLEService *pService;
+BLECharacteristic *pReadings;
 
 // identifier, resistance, port, maxVolts, maxAnalog
 RSensor MQ7("MQ7", 2000, 26, MAX_VOLTS, MAX_ANALOG);
@@ -31,11 +39,27 @@ void setup()
   Serial.begin(115200);
   Serial.println("SERIAL OK");
 
-  SerialBT.begin("Carsu");
+  BLEDevice::init("Carsu");
+  pServer = BLEDevice::createServer();
+  pService = pServer->createService(CARSU_UUID);
+
+  pReadings = pService->createCharacteristic(READINGS_UUID, BLECharacteristic::PROPERTY_READ);
+  pReadings->setValue("<init|0.000>");
+  pService->start();
+
+  // BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(CARSU_UUID);
+  // pServer->getAdvertising()->start();
+  pAdvertising->setScanResponse(true);
+  pAdvertising->setMinPreferred(0x06);
+  pAdvertising->setMinPreferred(0x12);
+
+  BLEDevice::startAdvertising();
   Serial.println("BLUETOOTH OK");
 
   Serial.print("Preaquecendo... ");
-  delay(PREHEAT_STANDBY);
+  //delay(PREHEAT_STANDBY);
   Serial.println("OK");
 
   MQ7.calibrate();
@@ -45,20 +69,7 @@ void sendBT(char *d)
 {
   Serial.print("<< BT ");
   Serial.println(d);
-  SerialBT.print(d);
-}
-
-void recvBT()
-{
-  if (SerialBT.available())
-  {
-    Serial.print("BT >> ");
-
-    while (SerialBT.available())
-      Serial.write(SerialBT.read());
-
-    Serial.println();
-  }
+  pReadings->setValue(d);
 }
 
 void loop()
@@ -73,6 +84,5 @@ void loop()
   sprintf(pkg, "%s %s %s %s %s", co7Pkg, coPkg, nh3Pkg, no2Pkg, mq135Pkg);
   sendBT(pkg);
 
-  recvBT();
   delay(500);
 }

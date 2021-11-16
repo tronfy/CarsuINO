@@ -16,24 +16,22 @@ void RSensor::calibrateStep()
 
 void RSensor::calibrate()
 {
-  Serial.print("Calibrating ");
-  Serial.print(gas);
-  Serial.print(" sensor... ");
+  Serial.print("Calibrando ");
+  Serial.print(identifier);
+  Serial.print("... ");
   do
   {
     delay(SAMPLE_GAP);
     calibrateStep();
   } while ((int)pR0 - (int)R0 > 2);
-  Serial.print("done. R0 = ");
+  Serial.print("OK R0 = ");
   Serial.println(R0);
 }
 
 void RSensor::package(char *outPkg)
 {
   float value = analogRead(port) / maxAnalog * 100;
-  if (convertPPM) {
-    float volts = analogRead(port) / maxAnalog * maxVolts;
-    value = pow(a * (maxVolts - volts) / volts / R0, b);
-  }
-  sprintf(outPkg, "<%s|%.3f>", gas, value);
+  // float volts = analogRead(port) / maxAnalog * maxVolts;
+  // value = pow(1538.46 * (maxVolts - volts) / volts / R0, -1.709);
+  sprintf(outPkg, "<%s|%.3f>", identifier, value);
 }

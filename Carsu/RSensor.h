@@ -7,35 +7,30 @@
 class RSensor
 {
   private:
-    char *gas;
+    char *identifier;
     float resistance;
     int port;
     float volts, maxVolts, maxAnalog, R0, pR0;
-    float a, b;
-    bool convertPPM;
 
   private:
     void getReadings();
     void calibrateStep();
 
   public:
-    RSensor(char *gas, float resistance, int port, float maxVolts, float maxAnalog, float a, float b, bool convertPPM)
+    RSensor(char *identifier, float resistance, int port, float maxVolts, float maxAnalog)
     {
-      this->gas = new char[10];
+      this->identifier = new char[10];
       int i = 0;
-      while (gas[i] != '\0' && i < 10)
+      while (identifier[i] != '\0' && i < 10)
       {
-        this->gas[i] = gas[i];
+        this->identifier[i] = identifier[i];
         i++;
       }
-      this->gas[i] = '\0';
+      this->identifier[i] = '\0';
       this->resistance = resistance;
       this->port = port;
       this->maxVolts = maxVolts;
       this->maxAnalog = maxAnalog;
-      this->a = a;
-      this->b = b;
-      this->convertPPM = convertPPM;
     }
     void calibrate();
     void package(char *outPkg);

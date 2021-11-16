@@ -9,13 +9,12 @@ class MICS6814Sensor
   private:
     int coPort, nh3Port, no2Port;
     float maxVolts, maxAnalog;
-    bool convertPPM;
 
   private:
     void getReadings();
 
   public:
-    MICS6814Sensor(int coPort, int nh3Port, int no2Port, float maxVolts, float maxAnalog, bool convertPPM)
+    MICS6814Sensor(int coPort, int nh3Port, int no2Port, float maxVolts, float maxAnalog)
     {
       this->coPort = coPort;
       this->nh3Port = nh3Port;
@@ -23,9 +22,7 @@ class MICS6814Sensor
 
       this->maxVolts = maxVolts;
       this->maxAnalog = maxAnalog;
-      this->convertPPM = convertPPM;
     }
-    void calibrate();
     void package(char *coPkg, char *nh3Pkg, char *no2Pkg);
 };
 #endif

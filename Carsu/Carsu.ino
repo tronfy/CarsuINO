@@ -6,15 +6,14 @@
 #define MAX_VOLTS 3.3
 #define MAX_ANALOG 4095.0
 #define PREHEAT_STANDBY 10000
-#define CONVERT_PPM false
 
 BluetoothSerial SerialBT;
 
-// identifier, resistance, port, maxVolts, maxAnalog, a, b, convertPPM
-RSensor MQ7("MQ7", 2000, 26, MAX_VOLTS, MAX_ANALOG, 1538.46, -1.709, CONVERT_PPM);
+// identifier, resistance, port, maxVolts, maxAnalog
+RSensor MQ7("MQ7", 2000, 26, MAX_VOLTS, MAX_ANALOG);
 
-// coPort, nh3Port, no2Port, maxVolts, maxAnalog, convertPPM
-MICS6814Sensor MICS6814(13, 12, 14, MAX_VOLTS, MAX_ANALOG, CONVERT_PPM);
+// coPort, nh3Port, no2Port, maxVolts, maxAnalog
+MICS6814Sensor MICS6814(13, 12, 14, MAX_VOLTS, MAX_ANALOG);
 
 // identifier, port, maxAnalog
 QSensor MQ135("MQ135", 27, MAX_ANALOG);
@@ -30,17 +29,16 @@ char mq135Pkg[18];
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("DEVICE START");
+  Serial.println("SERIAL OK");
 
   SerialBT.begin("Carsu");
   Serial.println("BLUETOOTH OK");
 
-  Serial.print("Preheating... ");
+  Serial.print("Preaquecendo... ");
   delay(PREHEAT_STANDBY);
   Serial.println("OK");
 
   MQ7.calibrate();
-  MICS6814.calibrate();
 }
 
 void sendBT(char *d)

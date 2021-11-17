@@ -18,7 +18,7 @@ BLEService *pService;
 BLECharacteristic *pReadings;
 
 // identifier, resistance, port, maxVolts, maxAnalog
-RSensor MQ7("MQ7", 2000, 26, MAX_VOLTS, MAX_ANALOG);
+RSensor MQ7("CO-MQ7", 2000, 26, MAX_VOLTS, MAX_ANALOG);
 
 // coPort, nh3Port, no2Port, maxVolts, maxAnalog
 MICS6814Sensor MICS6814(13, 12, 14, MAX_VOLTS, MAX_ANALOG);
@@ -81,7 +81,7 @@ void loop()
 
   MQ135.package(mq135Pkg);
 
-  sprintf(pkg, "%s %s %s %s %s", co7Pkg, coPkg, nh3Pkg, no2Pkg, mq135Pkg);
+  sprintf(pkg, "%s %s %s %s %s", co7Pkg, mq135Pkg, coPkg, nh3Pkg, no2Pkg);
   sendBT(pkg);
 
   delay(500);
